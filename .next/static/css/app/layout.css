@@ -1,0 +1,36 @@
+/*!*************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./app/globals.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************/
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede8df;
+  --ink: #1a1510;
+  --ink-dim: #7a7268;
+  --ink-muted: #b0a99e;
+  --accent: #c8430a;
+  --accent2: #1a6b3c;
+  --user-col: #c8430a;
+  --ai-col: #1a6b3c;
+  --border: rgba(26,21,16,0.1);
+  --border-strong: rgba(26,21,16,0.2);
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'Syne Mono', monospace;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
