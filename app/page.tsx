@@ -417,7 +417,7 @@ export default function Page() {
                 onClick={startSession}
                 disabled={["fetching_token", "connecting"].includes(status)}
               >
-                {status === "fetching_token" || status === "connecting" ? "…" : "START"}
+                {"fetching_token" === status || "connecting" === status ? "…" : "START"}
               </button>
             ) : (
               <button style={styles.btnStop} onClick={stopSession}>
