@@ -90,7 +90,7 @@ next-sts/
 
 - Node.js 20+
 - Next.js 15 (App Router)
-- OpenAI `gpt-4o-realtime-preview` モデル
+- OpenAI `gpt-4o-realtime` モデル
 
 ## 注意事項
 
