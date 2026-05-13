@@ -97,4 +97,3 @@ next-sts/
 - **マイク権限** : ブラウザがマイクアクセスを要求します。`https://` 上（または `localhost`）でのみ動作します。Vercel デプロイは自動で HTTPS になるので問題ありません。
 - **Ephemeral Token の有効期限** : OpenAI 発行のトークンは 60 秒で失効します。接続確立後は WebRTC セッション自体が継続するため問題ありません。
 - **コスト** : OpenAI Realtime API は通常の Chat API より高価です。使い終わったら必ず STOP ボタンを押してセッションを切断してください。
-# next-sts
