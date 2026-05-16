@@ -203,7 +203,7 @@ export default function Page() {
         throw new Error(body.error ?? `HTTP ${res.status}`);
       }
       const data = await res.json();
-      ephemeralKey = data.client_secret?.value;
+      ephemeralKey = data.value;
       if (!ephemeralKey) throw new Error("No client_secret in response");
     } catch (e) {
       setErrorMsg(String(e));
@@ -264,7 +264,7 @@ export default function Page() {
     await pc.setLocalDescription(offer);
 
     const sdpRes = await fetch(
-      "https://api.openai.com/v1/realtime?model=gpt-realtime-2025-08-28",
+      "https://api.openai.com/v1/realtime/calls",
       {
         method: "POST",
         headers: {

@@ -18,25 +18,30 @@ export async function POST(req: Request) {
     if (ALLOWED_VOICES.includes(body.voice)) voice = body.voice;
   } catch {}
 
-  const res = await fetch("https://api.openai.com/v1/realtime/sessions", {
+  const res = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-realtime-2025-08-28",
-      voice,
-      instructions:
-        "You are a helpful, friendly voice assistant. " +
-        "Keep responses concise and conversational. " +
-        "Respond in the same language the user speaks.",
-      input_audio_transcription: { model: "whisper-1" },
-      turn_detection: {
-        type: "server_vad",
-        threshold: 0.5,
-        prefix_padding_ms: 300,
-        silence_duration_ms: 600,
+      session: {
+        type: "realtime",
+        model: "gpt-realtime",
+        instructions:
+          "You are a helpful, friendly voice assistant. " +
+          "Keep responses concise and conversational. " +
+          "Respond in the same language the user speaks.",
+        audio: {
+          output: { voice },
+        },
+        input_audio_transcription: { model: "whisper-1" },
+        turn_detection: {
+          type: "server_vad",
+          threshold: 0.5,
+          prefix_padding_ms: 300,
+          silence_duration_ms: 600,
+        },
       },
     }),
   });
