@@ -252,12 +252,6 @@ export default function Page() {
 
     dc.onopen = () => {
       setStatus("listening");
-      dc.send(
-        JSON.stringify({
-          type: "session.update",
-          session: { input_audio_transcription: { model: "whisper-1" } },
-        })
-      );
     };
 
     const offer = await pc.createOffer();
