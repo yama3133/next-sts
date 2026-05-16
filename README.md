@@ -8,22 +8,30 @@ OpenAI Realtime API (WebRTC) + Next.js App Router + Vercel で動く
 ```
 Browser (Mic / Speaker)
   │
-  │  ① POST /api/session  → Ephemeral Token 発行
+  │  ① POST /api/session  → Client Secret 発行
   ▼
 Vercel API Route (app/api/session/route.ts)
+  │  POST https://api.openai.com/v1/realtime/client_secrets
   │  OPENAI_API_KEY はここだけが持つ（クライアントに渡さない）
   │
   │  ② WebRTC SDP Offer/Answer
   ▼
-OpenAI Realtime API (wss://api.openai.com/v1/realtime)
+OpenAI Realtime API (https://api.openai.com/v1/realtime/calls)
   │  音声ストリーム（双方向）+ イベント DataChannel
   ▼
 Browser Audio Context（再生 / 波形表示）
 ```
 
-- **Vercel Functions** : Ephemeral Token 発行のみ（WebSocket 不要）
+- **Vercel Functions** : Client Secret 発行のみ（WebSocket 不要）
 - **WebRTC** : ブラウザ ↔ OpenAI 間の低遅延音声ストリーム
 - **DataChannel** : OpenAI Realtime イベント（transcript / VAD 等）の送受信
+
+### 使用 API エンドポイント（GA版）
+
+| 用途 | エンドポイント |
+|---|---|
+| Client Secret 発行（サーバー） | `POST /v1/realtime/client_secrets` |
+| WebRTC SDP 交換（ブラウザ） | `POST /v1/realtime/calls` |
 
 ## ローカル開発
 
