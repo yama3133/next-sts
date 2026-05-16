@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-4o-realtime",
+      model: "gpt-realtime-2025-08-28",
       voice,
       instructions:
         "You are a helpful, friendly voice assistant. " +
