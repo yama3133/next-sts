@@ -215,17 +215,31 @@ export default function Page() {
     const pc = new RTCPeerConnection();
     pcRef.current = pc;
 
+    // HTML <audio> element is kept (muted) to activate the WebRTC stream in Chrome.
+    // Actual playback goes through WebAudio API with a GainNode for volume boost.
     const audioEl = document.createElement("audio");
     audioEl.autoplay = true;
+    audioEl.muted = true;
     audioElRef.current = audioEl;
 
     pc.ontrack = (e) => {
       audioEl.srcObject = e.streams[0];
+
       const ctx = new AudioContext();
       const src = ctx.createMediaStreamSource(e.streams[0]);
+
+      // Volume boost (1.5x) — HTML audio is capped at 1.0, so we use WebAudio.
+      const gain = ctx.createGain();
+      gain.gain.value = 1.5;
+
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
-      src.connect(analyser);
+
+      // Chain: source → gain → analyser → speakers
+      src.connect(gain);
+      gain.connect(analyser);
+      analyser.connect(ctx.destination);
+
       analyserRef.current = analyser;
     };
 
