@@ -100,6 +100,26 @@ next-sts/
 - Next.js 15 (App Router)
 - OpenAI `gpt-realtime` モデル（GA版）
 
+## セッション設定
+
+`app/api/session/route.ts` で以下を構成しています：
+
+| 項目 | 値 | 目的 |
+|---|---|---|
+| `model` | `gpt-realtime` | GA版・非Reasoning（コスト効率重視） |
+| `audio.input.turn_detection` | `semantic_vad` | 雑音や残響での誤発火を抑制 |
+| `audio.input.transcription.model` | `whisper-1` | ユーザー発話の文字起こし |
+| `instructions` | 日本語の丁寧語強制 / 勝手な話題禁止 | 不要な独白を抑制 |
+
+## クライアント側の音声処理
+
+`app/page.tsx` の WebRTC 音声まわりで以下を実施：
+
+- **エコーキャンセル / ノイズ抑制 / オートゲイン** : `getUserMedia` で明示的に有効化（AIの声をマイクが拾うフィードバック防止）
+- **音量ブースト** : WebAudio `GainNode` で 1.2 倍に増幅（HTML `<audio>` は 1.0 が上限のため）
+- **波形ビジュアライザ** : `AnalyserNode` で周波数データを取得して描画
+- **STOP 時のクリーンアップ** : `RTCPeerConnection` / `AudioContext` / マイクトラックを完全停止
+
 ## 注意事項
 
 - **マイク権限** : ブラウザがマイクアクセスを要求します。`https://` 上（または `localhost`）でのみ動作します。Vercel デプロイは自動で HTTPS になるので問題ありません。
