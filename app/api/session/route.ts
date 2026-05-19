@@ -32,7 +32,10 @@ export async function POST(req: Request) {
         instructions:
           "You are a helpful, friendly voice assistant. " +
           "Keep responses concise and conversational. " +
-          "Respond in the same language the user speaks.",
+          "Respond in the same language the user speaks. " +
+          "Do not introduce new topics on your own. " +
+          "Only respond to what the user actually says, and wait for the user to bring up topics. " +
+          "If the user just greets you, respond with a short greeting and ask how you can help — do not start talking about unrelated subjects.",
         audio: {
           input: {
             transcription: { model: "whisper-1" },
