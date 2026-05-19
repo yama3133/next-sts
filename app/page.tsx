@@ -64,6 +64,8 @@ export default function Page() {
   const dcRef = useRef<RTCDataChannel | null>(null);
   const audioElRef = useRef<HTMLAudioElement | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
   const animRef = useRef<number>(0);
   const logRef = useRef<HTMLDivElement | null>(null);
 
@@ -226,11 +228,13 @@ export default function Page() {
       audioEl.srcObject = e.streams[0];
 
       const ctx = new AudioContext();
+      audioCtxRef.current = ctx;
       const src = ctx.createMediaStreamSource(e.streams[0]);
 
-      // Volume boost (1.5x) — HTML audio is capped at 1.0, so we use WebAudio.
+      // Volume boost (1.2x) — HTML audio is capped at 1.0, so we use WebAudio.
+      // Kept moderate to avoid mic feedback when echo cancellation is imperfect.
       const gain = ctx.createGain();
-      gain.gain.value = 1.5;
+      gain.gain.value = 1.2;
 
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
@@ -245,13 +249,23 @@ export default function Page() {
 
     let localStream: MediaStream;
     try {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Explicitly enable echo cancellation / noise suppression / auto gain
+      // to prevent the AI's voice (from speakers) from being captured by the mic
+      // and fed back as user input.
+      localStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
     } catch (e) {
       setErrorMsg("Microphone access denied: " + String(e));
       setStatus("error");
       pc.close();
       return;
     }
+    localStreamRef.current = localStream;
     localStream.getTracks().forEach((t) => pc.addTrack(t, localStream));
 
     const dc = pc.createDataChannel("oai-events");
@@ -304,11 +318,24 @@ export default function Page() {
   // ── Stop session ──────────────────────────────────────────────────────────
 
   const stopSession = useCallback(() => {
+    // Stop receiving / sending events
     dcRef.current?.close();
     dcRef.current = null;
+
+    // Tear down the peer connection (stops remote audio track)
+    pcRef.current?.getSenders().forEach((s) => s.track?.stop());
     pcRef.current?.close();
     pcRef.current = null;
+
+    // Stop the local microphone tracks (otherwise mic stays active)
+    localStreamRef.current?.getTracks().forEach((t) => t.stop());
+    localStreamRef.current = null;
+
+    // Close the WebAudio context (stops playback through speakers)
+    audioCtxRef.current?.close().catch(() => {});
+    audioCtxRef.current = null;
     analyserRef.current = null;
+
     if (audioElRef.current) {
       audioElRef.current.srcObject = null;
       audioElRef.current = null;
