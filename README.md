@@ -98,7 +98,7 @@ next-sts/
 
 - Node.js 20+
 - Next.js 15 (App Router)
-- OpenAI `gpt-realtime-2` モデル（GA版・Reasoning対応）
+- OpenAI `gpt-realtime` モデル（GA版）
 
 ## 注意事項
 

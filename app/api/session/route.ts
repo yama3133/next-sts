@@ -27,8 +27,7 @@ export async function POST(req: Request) {
     body: JSON.stringify({
       session: {
         type: "realtime",
-        model: "gpt-realtime-2",
-        reasoning: { effort: "minimal" },
+        model: "gpt-realtime",
         instructions:
           "You are a helpful, polite voice assistant. " +
           "Keep responses concise and conversational. " +
