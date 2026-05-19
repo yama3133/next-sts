@@ -126,7 +126,7 @@ export default function Page() {
         case "response.created":
           setStatus("thinking");
           break;
-        case "response.audio.delta":
+        case "response.output_audio.delta":
           setStatus("speaking");
           break;
         case "conversation.item.input_audio_transcription": {
@@ -142,7 +142,7 @@ export default function Page() {
           if (transcript) upsertMsg(itemId, "user", transcript, true);
           break;
         }
-        case "response.audio_transcript.delta": {
+        case "response.output_audio_transcript.delta": {
           const itemId = (ev.item_id ?? "ai-live") as string;
           const delta = (ev.delta ?? "") as string;
           setMessages((prev) => {
@@ -155,7 +155,7 @@ export default function Page() {
           });
           break;
         }
-        case "response.audio_transcript.done": {
+        case "response.output_audio_transcript.done": {
           const itemId = (ev.item_id ?? "ai-live") as string;
           const transcript = (ev.transcript ?? "") as string;
           setMessages((prev) => {
