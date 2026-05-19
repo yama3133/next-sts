@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       session: {
         type: "realtime",
         model: "gpt-realtime-2",
-        reasoning: { effort: "low" },
+        reasoning: { effort: "minimal" },
         instructions:
           "You are a helpful, polite voice assistant. " +
           "Keep responses concise and conversational. " +
@@ -37,16 +37,18 @@ export async function POST(req: Request) {
           "(1) use natural native Japanese pronunciation and intonation — never sound like a foreigner or use an English-accented delivery; " +
           "(2) always use polite forms (です・ます調 / 丁寧語) — do not use casual or frank speech (タメ口・フランクな言い方は禁止); " +
           "(3) avoid mixing English words unnecessarily. " +
-          "Do not introduce new topics on your own. " +
-          "Only respond to what the user actually says, and wait for the user to bring up topics. " +
-          "If the user just greets you, respond with a short polite greeting and ask how you can help — do not start talking about unrelated subjects.",
+          "CRITICAL behavior rules: " +
+          "- NEVER speak unless the user has clearly addressed you with a question or request. " +
+          "- NEVER introduce topics on your own (especially do not start explaining technical subjects like CPU, programming, etc. unless the user explicitly asks). " +
+          "- If you only hear silence, background noise, or unclear audio, STAY SILENT and wait. Do NOT generate a response. " +
+          "- If the user just greets you, respond with a short polite greeting (one sentence) and ask how you can help. " +
+          "- Keep every response under 2 sentences unless the user explicitly asks for detail. " +
+          "- If unsure what the user said, ask a short clarifying question instead of guessing and elaborating.",
         audio: {
           input: {
             transcription: { model: "whisper-1" },
             turn_detection: {
-              type: "server_vad",
-              threshold: 0.5,
-              silence_duration_ms: 600,
+              type: "semantic_vad",
             },
           },
           output: { voice },
